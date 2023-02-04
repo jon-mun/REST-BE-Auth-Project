@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/User";
 import e from "../utils/Exceptions/index";
+import {
+  validateUserSignUp,
+  validateUserUpdate,
+} from "../validations/users/userValidation";
 
 export async function getManyUsers(count: number) {
   if (isNaN(count))
@@ -30,13 +34,12 @@ export async function getUserById(userId: string) {
 }
 
 export async function addNewUser(body: Object) {
-  // TODO validate body
-  const { username, password, email } = body as any;
+  const { username, password, email } = validateUserSignUp(body);
 
   const user = await User.findOne({ username: username });
   if (user) throw new e.BadRequestError("Username has already been taken!");
 
-  // TODO hash password
+  // TODO: hash password
 
   const result = await User.create({
     username,
@@ -53,8 +56,7 @@ export async function addNewUser(body: Object) {
 }
 
 export async function updateUserById(userId: string, body: Object) {
-  // TODO validate input
-  const { username, password, email } = body as any;
+  const { username, email } = validateUserUpdate(body);
 
   const user = await User.findById(userId);
   if (!user) throw new e.BadRequestError("User doesn't exist!");
@@ -65,13 +67,10 @@ export async function updateUserById(userId: string, body: Object) {
       throw new e.BadRequestError("Username has already been taken!");
   }
 
-  // TODO check other duplicate body
-
   const result = await User.findOneAndUpdate(
     { _id: userId },
     {
       username,
-      password,
       email,
     },
     { new: true }
