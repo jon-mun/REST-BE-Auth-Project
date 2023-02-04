@@ -12,7 +12,7 @@ function getErrorMessage(error: unknown) {
   return String(error);
 }
 
-export {
+export default {
   CustomError,
   InternalServerError,
   BadRequestError,

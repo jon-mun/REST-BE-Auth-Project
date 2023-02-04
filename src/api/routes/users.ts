@@ -3,14 +3,14 @@ import {
   addUser,
   deleteUser,
   getManyUser,
-  getUserById,
+  getUser,
   updateUser,
-} from "../controllers/users";
+} from "../controllers/userController";
 
 const router = Router();
 
 router.route("/").get(getManyUser).post(addUser);
 
-router.route("/:userId").get(getUserById).put(updateUser).delete(deleteUser);
+router.route("/:userId").get(getUser).put(updateUser).delete(deleteUser);
 
 export default router;

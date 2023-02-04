@@ -2,15 +2,15 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import mongoConnect from "./utils/db";
+import mongoConnect from "./config/db";
 
-import userRouter from "./routes/users";
+import routes from "./api/routes/index";
 
 const app = express();
 app.use(express.json());
 mongoConnect();
 
-app.use("/api/users", userRouter);
+app.use("/", routes);
 
 app.get("/", (req, res) => {
   res.json("Hello world!");
