@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/User";
 import e from "../utils/Exceptions/index";
-import {
-  validateUserSignUp,
-  validateUserUpdate,
-} from "../validations/users/userValidation";
+import { validateUserUpdate } from "../validations/users/userValidation";
 
 export async function getManyUsers(count: number) {
   if (isNaN(count))
@@ -31,28 +28,6 @@ export async function getUserById(userId: string) {
     username,
     email,
   };
-}
-
-export async function addNewUser(body: Object) {
-  const { username, password, email } = validateUserSignUp(body);
-
-  const user = await User.findOne({ username: username });
-  if (user) throw new e.BadRequestError("Username has already been taken!");
-
-  // TODO: hash password
-
-  const result = await User.create({
-    username,
-    password,
-    email,
-  });
-
-  if (!result)
-    throw new e.InternalServerError(
-      "Failed to add new user! Please try again."
-    );
-
-  return result;
 }
 
 export async function updateUserById(userId: string, body: Object) {
