@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
-import { registerUser, validateUserCredentials } from "../services/authService";
+import {
+  registerUser,
+  sendRefreshToken,
+  validateUserCredentials,
+} from "../services/authService";
 import e from "../utils/Exceptions/index";
+import { createAccessToken, createRefreshToken } from "../utils/jwt";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -18,12 +23,12 @@ export async function register(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
   try {
-    await validateUserCredentials(req.body);
+    const user = await validateUserCredentials(req.body);
 
-    // TODO: Create access and refresh jwt token
+    sendRefreshToken(res, createRefreshToken(user));
 
-    res.status(201).json({
-      data: "accessToken",
+    res.status(200).json({
+      data: { accessToken: createAccessToken(user) },
     });
   } catch (error: unknown) {
     res

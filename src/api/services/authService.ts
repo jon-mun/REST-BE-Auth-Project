@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { Response } from "express";
 import User from "../models/User";
 import e from "../utils/Exceptions/index";
 import {
@@ -9,8 +10,9 @@ import {
 export async function registerUser(body: Object) {
   const { username, password, email } = validateRegisterUser(body);
 
-  const user = await User.exists({ username: username });
-  if (user) throw new e.BadRequestError("Username has already been taken!");
+  const isDuplicate = await User.exists({ username: username });
+  if (isDuplicate)
+    throw new e.BadRequestError("Username has already been taken!");
 
   const hashedPassword = await bcrypt.hash(
     password,
@@ -42,5 +44,13 @@ export async function validateUserCredentials(body: Object) {
 
   if (!result) throw new e.UnauthorizedError("Invalid user credentials!");
 
-  return result;
+  return user;
+}
+
+export function sendRefreshToken(res: Response, token: string) {
+  res.cookie("jid", token, {
+    httpOnly: true,
+    // path: "/refresh_token",
+    // TODO: add domain and path option
+  });
 }
