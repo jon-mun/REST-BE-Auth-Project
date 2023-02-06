@@ -14,3 +14,11 @@ export const loginUserSchema = z
     password: z.string(),
   })
   .strict();
+
+export const refreshTokenPayloadSchema = z.object({
+  userId: z.string(),
+  role: z.string(),
+  iat: z.number(),
+  exp: z.number(),
+  tokenVersion: z.number(),
+});

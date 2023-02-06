@@ -5,16 +5,15 @@ import express from "express";
 import mongoConnect from "./config/db";
 
 import routes from "./api/routes/index";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
+// TODO: Implement cors
 mongoConnect();
 
+app.use(cookieParser());
 app.use("/", routes);
-
-app.get("/", (req, res) => {
-  res.json("Hello world!");
-});
 
 app.listen(process.env.PORT, () => {
   console.log(

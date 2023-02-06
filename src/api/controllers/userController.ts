@@ -43,6 +43,11 @@ export async function updateUser(req: Request, res: Response) {
   try {
     const { userId } = req.params;
 
+    // TODO: convert to middleware
+    const jwtPayload = res.locals.user;
+    if (userId !== jwtPayload.userId)
+      throw new e.UnauthorizedError("Unauthorized!");
+
     const result = await updateUserById(userId, req.body);
 
     res.status(200).json({
